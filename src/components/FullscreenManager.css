@@ -1,0 +1,233 @@
+/* FullscreenManager Component Styles */
+
+.fullscreen-manager {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.fullscreen-manager.fullscreen-active {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  background-color: #000000;
+}
+
+/* Fullscreen Controls */
+.fullscreen-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px 0;
+  gap: 10px;
+}
+
+.fullscreen-toggle-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  min-height: 44px; /* Touch-friendly minimum */
+  min-width: 120px;
+}
+
+.fullscreen-toggle-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.fullscreen-toggle-btn:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
+}
+
+.fullscreen-toggle-btn:disabled {
+  background: #666666;
+  cursor: not-allowed;
+  opacity: 0.6;
+  box-shadow: none;
+}
+
+.fullscreen-fallback-notice {
+  text-align: center;
+  color: #888888;
+  font-style: italic;
+  max-width: 300px;
+}
+
+.mobile-gesture-hint {
+  text-align: center;
+  color: #666666;
+  font-style: italic;
+  max-width: 280px;
+  margin-top: 8px;
+}
+
+/* Hide mobile gesture hint on desktop */
+@media (min-width: 1025px) {
+  .mobile-gesture-hint {
+    display: none;
+  }
+}
+
+/* Error Display */
+.fullscreen-error {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #ff4444;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(255, 68, 68, 0.3);
+  z-index: 10000;
+  animation: slideInFromTop 0.3s ease-out;
+  font-weight: 500;
+}
+
+@keyframes slideInFromTop {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* Content Areas */
+.fullscreen-content {
+  width: 100%;
+  height: 100%;
+  transition: all 0.3s ease;
+}
+
+.content-normal {
+  /* Normal mode - no special styling needed */
+}
+
+.content-fullscreen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #000000;
+  color: white;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Fullscreen Exit Hint */
+.fullscreen-exit-hint {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  z-index: 10001;
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+}
+
+.fullscreen-exit-hint:hover {
+  opacity: 1;
+}
+
+/* Mobile gesture hints */
+@media (max-width: 768px) {
+  .fullscreen-exit-hint::after {
+    content: " • Swipe down or double-tap to exit";
+  }
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+  .fullscreen-toggle-btn {
+    padding: 14px 28px;
+    font-size: 18px;
+    min-height: 48px; /* Larger touch target on mobile */
+  }
+  
+  .fullscreen-controls {
+    margin: 15px 0;
+  }
+  
+  .fullscreen-error {
+    left: 10px;
+    right: 10px;
+    transform: none;
+    max-width: calc(100vw - 20px);
+  }
+  
+  .fullscreen-exit-hint {
+    bottom: 10px;
+    right: 10px;
+    left: 10px;
+    text-align: center;
+  }
+  
+  .content-fullscreen {
+    padding: 10px;
+  }
+}
+
+/* Landscape Mobile Optimizations */
+@media (max-width: 768px) and (orientation: landscape) {
+  .fullscreen-exit-hint {
+    bottom: 5px;
+    right: 5px;
+    left: auto;
+    font-size: 11px;
+    padding: 6px 12px;
+  }
+  
+  .content-fullscreen {
+    padding: 5px;
+  }
+}
+
+/* High DPI / Retina Display Optimizations */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .fullscreen-toggle-btn {
+    border: 0.5px solid rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* Focus Styles for Accessibility */
+.fullscreen-toggle-btn:focus {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .fullscreen-toggle-btn,
+  .fullscreen-content,
+  .fullscreen-error,
+  .fullscreen-exit-hint {
+    transition: none;
+    animation: none;
+  }
+  
+  .fullscreen-toggle-btn:hover:not(:disabled) {
+    transform: none;
+  }
+  
+  .fullscreen-toggle-btn:active:not(:disabled) {
+    transform: none;
+  }
+}

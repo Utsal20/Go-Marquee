@@ -1,0 +1,41 @@
+{
+  "name": "gomarquee",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "build:analyze": "tsc && vite build --mode analyze",
+    "build:production": "tsc && vite build --mode production",
+    "build:deploy": "chmod +x deploy/build-production.sh && ./deploy/build-production.sh",
+    "deploy:s3": "chmod +x deploy/deploy-to-s3.sh && ./deploy/deploy-to-s3.sh",
+    "deploy:full": "npm run build:deploy && npm run deploy:s3",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 50",
+    "preview": "vite preview",
+    "test": "vitest --run",
+    "performance:audit": "npm run build && npm run preview -- --port 4173 & sleep 2 && npx lighthouse http://localhost:4173 --output=json --output-path=./performance-report.json && pkill -f 'vite preview'"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.4.2",
+    "@testing-library/react": "^14.2.1",
+    "@types/react": "^18.2.66",
+    "@types/react-dom": "^18.2.22",
+    "@typescript-eslint/eslint-plugin": "^7.2.0",
+    "@typescript-eslint/parser": "^7.2.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.6",
+    "fast-check": "^3.17.1",
+    "jsdom": "^27.4.0",
+    "terser": "^5.44.1",
+    "typescript": "^5.2.2",
+    "vite": "^5.2.0",
+    "vitest": "^1.4.0"
+  }
+}

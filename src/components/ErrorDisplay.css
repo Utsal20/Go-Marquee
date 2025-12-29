@@ -1,0 +1,238 @@
+/* Error Display Component Styles */
+
+.error-display {
+  position: fixed;
+  left: 20px;
+  right: 20px;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.error-display-top {
+  top: 20px;
+}
+
+.error-display-bottom {
+  bottom: 20px;
+}
+
+.error-display-center {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.error-item {
+  background: rgba(0, 0, 0, 0.9);
+  border-radius: 8px;
+  margin-bottom: 10px;
+  padding: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border-left: 4px solid;
+  animation: slideIn 0.3s ease-out;
+  pointer-events: auto;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Severity-based styling */
+.error-critical {
+  border-left-color: #f44336;
+  background: rgba(244, 67, 54, 0.1);
+}
+
+.error-high {
+  border-left-color: #ff9800;
+  background: rgba(255, 152, 0, 0.1);
+}
+
+.error-medium {
+  border-left-color: #ffeb3b;
+  background: rgba(255, 235, 59, 0.1);
+}
+
+.error-low {
+  border-left-color: #2196f3;
+  background: rgba(33, 150, 243, 0.1);
+}
+
+/* Category-based styling */
+.error-input {
+  border-right: 2px solid #9c27b0;
+}
+
+.error-animation {
+  border-right: 2px solid #4caf50;
+}
+
+.error-fullscreen {
+  border-right: 2px solid #ff5722;
+}
+
+.error-performance {
+  border-right: 2px solid #795548;
+}
+
+.error-browser {
+  border-right: 2px solid #607d8b;
+}
+
+.error-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.error-icon {
+  font-size: 18px;
+  margin-right: 8px;
+}
+
+.error-category {
+  font-size: 12px;
+  font-weight: bold;
+  color: #888;
+  letter-spacing: 0.5px;
+}
+
+.error-dismiss {
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.error-dismiss:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.error-message {
+  color: #fff;
+  font-size: 14px;
+  line-height: 1.4;
+  margin-bottom: 12px;
+}
+
+.error-details {
+  margin-bottom: 12px;
+}
+
+.error-details small {
+  color: #888;
+  font-size: 11px;
+  font-family: monospace;
+}
+
+.error-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.error-retry-btn,
+.error-dismiss-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.error-retry-btn:hover {
+  background: rgba(76, 175, 80, 0.2);
+  border-color: #4caf50;
+}
+
+.error-dismiss-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.error-retry-btn:active,
+.error-dismiss-btn:active {
+  transform: translateY(1px);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .error-display {
+    left: 10px;
+    right: 10px;
+  }
+  
+  .error-item {
+    padding: 12px;
+    max-width: none;
+  }
+  
+  .error-message {
+    font-size: 13px;
+  }
+  
+  .error-actions {
+    flex-direction: column;
+  }
+  
+  .error-retry-btn,
+  .error-dismiss-btn {
+    width: 100%;
+    padding: 8px 12px;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .error-item {
+    background: #000;
+    border: 2px solid #fff;
+  }
+  
+  .error-message {
+    color: #fff;
+  }
+  
+  .error-retry-btn,
+  .error-dismiss-btn {
+    background: #fff;
+    color: #000;
+    border: 1px solid #000;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .error-item {
+    animation: none;
+  }
+  
+  .error-retry-btn,
+  .error-dismiss-btn,
+  .error-dismiss {
+    transition: none;
+  }
+}

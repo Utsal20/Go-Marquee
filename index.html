@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+    <meta name="description" content="GoMarquee - Create customizable scrolling marquee text displays with real-time styling controls. Perfect for mobile devices with fullscreen support." />
+    <meta name="keywords" content="marquee, scrolling text, customizable, mobile, fullscreen, text display" />
+    <meta name="author" content="GoMarquee" />
+    <meta name="theme-color" content="#242424" />
+    
+    <!-- Accessibility and SEO meta tags -->
+    <meta name="robots" content="index, follow" />
+    <meta name="color-scheme" content="dark light" />
+    
+    <!-- Open Graph meta tags for social sharing -->
+    <meta property="og:title" content="GoMarquee - Customizable Scrolling Text" />
+    <meta property="og:description" content="Create beautiful scrolling marquee text displays with real-time styling controls" />
+    <meta property="og:type" content="website" />
+    
+    <!-- Preload critical resources for better performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+    
+    <title>GoMarquee - Customizable Scrolling Text</title>
+    
+    <!-- Loading screen styles to prevent flash of unstyled content -->
+    <style>
+      /* Critical CSS for loading state */
+      #loading-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #242424;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        color: rgba(255, 255, 255, 0.87);
+        font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+      }
+      
+      .loading-spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid rgba(255, 255, 255, 0.1);
+        border-top: 3px solid #007bff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 16px;
+      }
+      
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      
+      .loading-text {
+        font-size: 16px;
+        opacity: 0.8;
+        text-align: center;
+      }
+      
+      /* Hide loading screen when app is ready */
+      .app-ready #loading-screen {
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease-out;
+      }
+      
+      /* Ensure root is hidden until app loads */
+      #root {
+        opacity: 0;
+        transition: opacity 0.3s ease-in;
+      }
+      
+      .app-ready #root {
+        opacity: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Loading screen for better UX -->
+    <div id="loading-screen" role="status" aria-label="Loading GoMarquee application">
+      <div class="loading-spinner" aria-hidden="true"></div>
+      <div class="loading-text">Loading GoMarquee...</div>
+    </div>
+    
+    <!-- Main application container -->
+    <div id="root" role="main" aria-label="GoMarquee Application"></div>
+    
+    <!-- Loading completion script -->
+    <script>
+      // Remove loading screen when app is ready
+      window.addEventListener('load', function() {
+        setTimeout(function() {
+          document.body.classList.add('app-ready');
+          // Remove loading screen after transition
+          setTimeout(function() {
+            const loadingScreen = document.getElementById('loading-screen');
+            if (loadingScreen) {
+              loadingScreen.remove();
+            }
+          }, 300);
+        }, 100);
+      });
+      
+      // Accessibility: Skip to main content
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Tab' && e.shiftKey === false && document.activeElement === document.body) {
+          const mainContent = document.querySelector('[role="main"]');
+          if (mainContent) {
+            mainContent.focus();
+            e.preventDefault();
+          }
+        }
+      });
+    </script>
+    
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,389 @@
+/* MarqueeDisplayComponent CSS - Optimized for 60fps performance with direction control and real-time updates */
+
+.marquee-container {
+  width: 100%;
+  height: 70vh; /* Use 70% of viewport height */
+  overflow: hidden;
+  position: relative;
+  background-color: #1a1a1a;
+  border-radius: 8px;
+  margin: 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center content horizontally */
+  
+  /* Enable hardware acceleration for smooth performance */
+  transform: translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
+  perspective: 1000px;
+  
+  /* Real-time update transitions */
+  transition: box-shadow 0.3s ease-out, border-color 0.3s ease-out;
+}
+
+.marquee-container.marquee-updating {
+  box-shadow: 0 0 15px rgba(76, 175, 80, 0.4);
+  border: 2px solid rgba(76, 175, 80, 0.6);
+}
+
+/* FORCE FULLSCREEN STYLES - MAXIMUM Z-INDEX */
+.marquee-container.marquee-fullscreen.marquee-ltr,
+.marquee-container.marquee-fullscreen.marquee-rtl,
+.marquee-container.marquee-fullscreen {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background-color: #000000 !important;
+  z-index: 9999999 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  /* Debug border to confirm styles are applied */
+  box-shadow: inset 0 0 0 10px red !important;
+}
+
+/* FORCE APP FULLSCREEN */
+.app.app-fullscreen {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 9999998 !important;
+  background: #000000 !important;
+}
+
+/* FORCE FULLSCREEN MANAGER TO NOT INTERFERE */
+.fullscreen-manager.fullscreen-active {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 9999997 !important;
+  background: transparent !important;
+}
+
+/* FORCE FULLSCREEN TEXT STYLES - ABSOLUTE POSITIONING */
+.marquee-container.marquee-fullscreen.marquee-ltr .marquee-text,
+.marquee-container.marquee-fullscreen.marquee-rtl .marquee-text,
+.marquee-container.marquee-fullscreen .marquee-text {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  margin: 0 !important;
+  padding: 20px !important;
+  z-index: 1000000 !important;
+  white-space: nowrap !important;
+  text-align: center !important;
+  /* Force large font size and bright color */
+  font-size: 120px !important;
+  color: #00ff00 !important;
+  font-weight: bold !important;
+  background: rgba(255, 0, 0, 0.8) !important;
+  border: 5px solid yellow !important;
+  min-width: 200px !important;
+  min-height: 100px !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.marquee-text {
+  position: absolute;
+  white-space: nowrap;
+  
+  /* Hardware acceleration for smooth animation */
+  transform: translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
+  
+  /* Smooth transition for direction changes */
+  transition: none; /* Disable transitions during animation */
+  
+  /* Ensure text is vertically centered in normal mode */
+  top: 50%;
+  transform: translateY(-50%) translateZ(0);
+}
+
+/* Override positioning for fullscreen mode */
+.marquee-container.marquee-fullscreen .marquee-text {
+  /* Reset positioning - let flexbox handle centering */
+  position: static !important;
+  top: auto !important;
+  transform: none !important;
+}
+
+/* Animation classes for direction control */
+.marquee-ltr .marquee-text {
+  animation: marqueeScrollLTR var(--animation-duration, 5s) linear infinite;
+}
+
+.marquee-rtl .marquee-text {
+  animation: marqueeScrollRTL var(--animation-duration, 5s) linear infinite;
+}
+
+/* Real-time update indicator */
+.marquee-update-indicator {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  background: rgba(76, 175, 80, 0.9);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: bold;
+  z-index: 10;
+  animation: updatePulse 1s ease-in-out infinite;
+}
+
+.marquee-error-indicator {
+  position: absolute;
+  top: 5px;
+  left: 10px;
+  background: rgba(244, 67, 54, 0.9);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: bold;
+  z-index: 10;
+  animation: errorShake 0.5s ease-in-out;
+}
+
+.marquee-fallback-notice {
+  position: absolute;
+  bottom: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 152, 0, 0.8);
+  color: white;
+  padding: 3px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  z-index: 10;
+}
+
+@keyframes updatePulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(0.95);
+  }
+}
+
+@keyframes errorShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  75% { transform: translateX(3px); }
+}
+
+/* Left-to-right animation */
+.marquee-ltr .marquee-text {
+  animation-name: marqueeScrollLTR;
+}
+
+/* Right-to-left animation */
+.marquee-rtl .marquee-text {
+  animation-name: marqueeScrollRTL;
+}
+
+/* Enhanced keyframes for left-to-right scrolling with seamless loop */
+@keyframes marqueeScrollLTR {
+  0% {
+    transform: translateY(-50%) translateX(var(--start-position, 100%));
+  }
+  100% {
+    transform: translateY(-50%) translateX(var(--end-position, -120%));
+  }
+}
+
+/* Enhanced keyframes for right-to-left scrolling with seamless loop */
+@keyframes marqueeScrollRTL {
+  0% {
+    transform: translateY(-50%) translateX(var(--start-position, -100%));
+  }
+  100% {
+    transform: translateY(-50%) translateX(var(--end-position, 120%));
+  }
+}
+
+/* Fullscreen-specific animations that don't interfere with positioning */
+.marquee-container.marquee-fullscreen .marquee-text {
+  /* In fullscreen, disable the normal animations and use simpler ones */
+  animation: none !important;
+}
+
+/* Alternative: if animation is still desired in fullscreen, use simpler keyframes */
+.marquee-container.marquee-fullscreen.marquee-ltr .marquee-text {
+  animation: marqueeScrollLTRFullscreen var(--animation-duration, 5s) linear infinite !important;
+}
+
+.marquee-container.marquee-fullscreen.marquee-rtl .marquee-text {
+  animation: marqueeScrollRTLFullscreen var(--animation-duration, 5s) linear infinite !important;
+}
+
+/* Fullscreen-specific keyframes with seamless loop */
+@keyframes marqueeScrollLTRFullscreen {
+  0% {
+    transform: translateX(100vw);
+  }
+  100% {
+    transform: translateX(-120vw);
+  }
+}
+
+@keyframes marqueeScrollRTLFullscreen {
+  0% {
+    transform: translateX(-100vw);
+  }
+  100% {
+    transform: translateX(120vw);
+  }
+}
+
+/* Pause animation on hover for better UX (non-fullscreen only) */
+.marquee-container:not(.marquee-fullscreen):hover .marquee-text {
+  animation-play-state: paused;
+}
+
+/* Hide ALL indicators and debug elements in fullscreen */
+.marquee-container.marquee-fullscreen .marquee-update-indicator,
+.marquee-container.marquee-fullscreen .marquee-error-indicator,
+.marquee-container.marquee-fullscreen .marquee-fallback-notice {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .marquee-container {
+    height: 60vh; /* Slightly smaller on mobile but still prominent */
+    margin: 15px 0;
+  }
+  
+  .marquee-container.marquee-fullscreen {
+    /* Ensure fullscreen works properly on mobile */
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    height: 100dvh !important; /* Use dynamic viewport height on mobile */
+    margin: 0 !important;
+    border-radius: 0 !important;
+    background-color: #000000 !important;
+    z-index: 999999 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  
+  .marquee-update-indicator {
+    font-size: 9px;
+    padding: 1px 4px;
+    top: 3px;
+    right: 5px;
+  }
+  
+  .marquee-error-indicator {
+    font-size: 9px;
+    padding: 2px 4px;
+    top: 3px;
+    left: 5px;
+  }
+  
+  .marquee-fallback-notice {
+    font-size: 8px;
+    padding: 2px 4px;
+    bottom: 3px;
+  }
+}
+
+@media (max-width: 480px) {
+  .marquee-container {
+    height: 50vh; /* Even smaller on very small screens */
+    margin: 10px 0;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .marquee-container {
+    border: 2px solid currentColor;
+  }
+  
+  .marquee-update-indicator {
+    background: currentColor;
+    color: var(--background-color, #000);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .marquee-text {
+    animation-duration: 20s !important;
+  }
+  
+  .marquee-update-indicator {
+    animation: none;
+  }
+  
+  .marquee-container.marquee-updating {
+    animation: none;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.6);
+  }
+}
+
+/* Performance optimizations for older devices */
+@media (max-resolution: 150dpi) {
+  .marquee-text {
+    /* Slightly reduce animation complexity on lower-end devices */
+    animation-timing-function: ease-in-out;
+  }
+}
+
+/* Focus styles for accessibility */
+.marquee-container:focus-within {
+  outline: 2px solid #0066cc;
+  outline-offset: 2px;
+}
+
+/* Loading state */
+.marquee-container.loading .marquee-text {
+  animation-play-state: paused;
+  opacity: 0.7;
+}
+
+/* Error state */
+.marquee-container.error {
+  background-color: #2a1a1a;
+  border: 1px solid #cc0000;
+}
+
+.marquee-container.error .marquee-text {
+  color: #ff6666 !important;
+}
+
+/* Fallback animation for when CSS animations fail */
+@keyframes fallbackScroll {
+  0% {
+    transform: translateY(-50%) translateX(100%);
+  }
+  100% {
+    transform: translateY(-50%) translateX(-100%);
+  }
+}

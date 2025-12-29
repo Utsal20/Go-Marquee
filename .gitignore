@@ -1,0 +1,15 @@
+logs
+performance-report.json
+
+node_modules
+dist
+# only maintaining deploy scripts locally for now
+deploy
+credentials.csv
+.kiro
+
+.vscode/*
+!.vscode/extensions.json
+.DS_Store
+
+coverage
