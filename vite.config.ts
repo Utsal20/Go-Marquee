@@ -73,6 +73,6 @@ export default defineConfig(({ mode }) => {
       },
     },
     // Base URL configuration for CDN deployment
-    base: mode === 'production' ? env.VITE_CDN_BASE_URL || '/' : '/',
+    base: mode === 'production' ? '/Go-Marquee/' : '/',
   }
 })
