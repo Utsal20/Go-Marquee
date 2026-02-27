@@ -41,8 +41,8 @@ describe('Touch Gesture Support', () => {
     
     const { container: testContainer } = render(
       <MobileOptimizer
-        onGestureDetected={mockOnGestureDetected}
-        onViewportChange={mockOnViewportChange}
+        onGestureDetected={mockOnGestureDetected as any}
+        onViewportChange={mockOnViewportChange as any}
         enableTouchGestures={true}
       >
         <div data-testid="test-content">Test Content</div>
