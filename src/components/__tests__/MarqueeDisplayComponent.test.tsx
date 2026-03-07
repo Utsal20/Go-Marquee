@@ -195,9 +195,9 @@ describe('MarqueeDisplayComponent Unit Tests', () => {
       // Should have a valid animation duration
       expect(animationDuration).toMatch(/^\d+(\.\d+)?s$/);
       
-      // Duration should be at least 3 seconds (minimum from component)
+      // Duration should be at least 1 second (minimum from DirectionController)
       const durationValue = parseFloat(animationDuration.replace('s', ''));
-      expect(durationValue).toBeGreaterThanOrEqual(3);
+      expect(durationValue).toBeGreaterThanOrEqual(1);
     });
   });
 
@@ -290,9 +290,9 @@ describe('MarqueeDisplayComponent Unit Tests', () => {
       const animationDuration = container?.style.getPropertyValue('--animation-duration');
       const durationValue = parseFloat(animationDuration!.replace('s', ''));
 
-      // Should be within bounds (3-30 seconds as per component logic)
-      expect(durationValue).toBeGreaterThanOrEqual(3);
-      expect(durationValue).toBeLessThanOrEqual(30);
+      // Should be within bounds (1-15 seconds as per DirectionController)
+      expect(durationValue).toBeGreaterThanOrEqual(1);
+      expect(durationValue).toBeLessThanOrEqual(15);
     });
   });
 

@@ -24,7 +24,6 @@ const MarqueeDisplayComponent: React.FC<MarqueeDisplayProps> = ({
   const [animationDuration, setAnimationDuration] = useState<number>(10);
   const [containerWidth, setContainerWidth] = useState<number>(0);
   const [textWidth, setTextWidth] = useState<number>(0);
-  const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const [animationError, setAnimationError] = useState<string | null>(null);
   const [useFallbackAnimation, setUseFallbackAnimation] = useState<boolean>(false);
 
@@ -139,9 +138,6 @@ const MarqueeDisplayComponent: React.FC<MarqueeDisplayProps> = ({
    */
   useEffect(() => {
     try {
-      // Show update indicator for real-time feedback
-      setIsUpdating(true);
-      
       // Update direction controller and get new animation settings
       const animationSettings = directionController.updateDirection(direction, textWidth, containerWidth);
       
@@ -151,12 +147,10 @@ const MarqueeDisplayComponent: React.FC<MarqueeDisplayProps> = ({
       // Force remeasurement after direction change
       const timeoutId = setTimeout(() => {
         measureDimensions();
-        setIsUpdating(false);
       }, 100); // Small delay to ensure DOM updates
 
       return () => {
         clearTimeout(timeoutId);
-        setIsUpdating(false);
       };
     } catch (error) {
       handleAnimationFailure(
@@ -167,7 +161,6 @@ const MarqueeDisplayComponent: React.FC<MarqueeDisplayProps> = ({
       
       setAnimationError('Direction change failed');
       setUseFallbackAnimation(true);
-      setIsUpdating(false);
     }
   }, [direction, textWidth, containerWidth]);
 
@@ -177,9 +170,6 @@ const MarqueeDisplayComponent: React.FC<MarqueeDisplayProps> = ({
    */
   useEffect(() => {
     try {
-      // Show update indicator for real-time feedback
-      setIsUpdating(true);
-      
       // Update speed in direction controller and get new animation settings
       const animationSettings = directionController.updateSpeed(animationSpeed, textWidth, containerWidth);
       
@@ -189,12 +179,10 @@ const MarqueeDisplayComponent: React.FC<MarqueeDisplayProps> = ({
       // Force remeasurement after speed change
       const timeoutId = setTimeout(() => {
         measureDimensions();
-        setIsUpdating(false);
       }, 100); // Small delay to ensure DOM updates
 
       return () => {
         clearTimeout(timeoutId);
-        setIsUpdating(false);
       };
     } catch (error) {
       handleAnimationFailure(
@@ -205,7 +193,6 @@ const MarqueeDisplayComponent: React.FC<MarqueeDisplayProps> = ({
       
       setAnimationError('Speed change failed');
       setUseFallbackAnimation(true);
-      setIsUpdating(false);
     }
   }, [animationSpeed, textWidth, containerWidth]);
 
@@ -214,18 +201,13 @@ const MarqueeDisplayComponent: React.FC<MarqueeDisplayProps> = ({
    * Enhanced with real-time update feedback
    */
   useEffect(() => {
-    // Show update indicator for real-time feedback
-    setIsUpdating(true);
-    
     // Use setTimeout to ensure DOM has updated with new styles
     const timeoutId = setTimeout(() => {
       measureDimensions();
-      setIsUpdating(false);
     }, 50);
 
     return () => {
       clearTimeout(timeoutId);
-      setIsUpdating(false);
     };
   }, [text, fontSize, textStyle, isFullscreen]);
 
@@ -240,12 +222,7 @@ const MarqueeDisplayComponent: React.FC<MarqueeDisplayProps> = ({
       
       return {
         ...animationCSS,
-        // Add update indicator styling
-        ...(isUpdating && {
-          boxShadow: '0 0 10px rgba(76, 175, 80, 0.5)',
-          transition: 'box-shadow 0.3s ease-out',
-        }),
-        // Add fallback animation styles if needed
+        // Fallback animation styles if needed
         ...(useFallbackAnimation && {
           animation: `fallbackScroll ${animationDuration}s linear infinite`,
         }),
@@ -265,30 +242,37 @@ const MarqueeDisplayComponent: React.FC<MarqueeDisplayProps> = ({
     }
   };
 
-  // Get text animation styles - different for fullscreen vs normal mode
+  // Get track animation styles - animates the track for seamless loop (two copies)
   const getTextAnimationStyles = () => {
     if (isFullscreen) {
-      // In fullscreen, use simpler animation that works with flexbox centering
       return {
         animation: `${direction === 'right-to-left' ? 'marqueeScrollRTLFullscreen' : 'marqueeScrollLTRFullscreen'} ${animationDuration}s linear infinite`,
       };
-    } else {
-      // Normal mode - use the existing animation with vertical centering
-      return {
-        animation: `${direction === 'right-to-left' ? 'marqueeScrollRTL' : 'marqueeScrollLTR'} ${animationDuration}s linear infinite`,
-      };
     }
+    // Normal mode: animate the track so when first copy exits, second is in place (seamless)
+    return {
+      animation: `${direction === 'right-to-left' ? 'marqueeTrackRTL' : 'marqueeTrackLTR'} ${animationDuration}s linear infinite`,
+    };
   };
 
   const containerClasses = [
     'marquee-container',
     isFullscreen ? 'marquee-fullscreen' : '',
     direction === 'right-to-left' ? 'marquee-rtl' : 'marquee-ltr',
-    isUpdating ? 'marquee-updating' : '',
   ].filter(Boolean).join(' ');
 
   // Create a unique key for forcing re-renders on real-time updates
   const updateKey = `${direction}-${text}-${fontSize}-${textColor}-${textStyle}-${animationSpeed}-${animationDuration}`;
+
+  // Gap width = view width (container in normal mode, viewport in fullscreen) so separation is one full view
+  const viewWidth = isFullscreen && typeof window !== 'undefined'
+    ? window.innerWidth
+    : containerWidth;
+  const spacerStyle: React.CSSProperties = {
+    flexShrink: 0,
+    width: viewWidth > 0 ? `${viewWidth}px` : '2em',
+    minWidth: viewWidth > 0 ? `${viewWidth}px` : '2em',
+  };
 
   return (
     <div 
@@ -316,16 +300,27 @@ const MarqueeDisplayComponent: React.FC<MarqueeDisplayProps> = ({
       )}
       
       <div
-        ref={textRef}
-        className="marquee-text"
-        style={{
-          ...textCSS,
-          ...getTextAnimationStyles(),
-        }}
+        className="marquee-track"
+        style={getTextAnimationStyles()}
         key={updateKey}
-        data-fullscreen={isFullscreen}
       >
-        {displayText}
+        <div
+          ref={textRef}
+          className="marquee-text"
+          style={textCSS}
+          data-fullscreen={isFullscreen}
+        >
+          {displayText}
+        </div>
+        <div className="marquee-track-spacer" aria-hidden style={spacerStyle} />
+        <div
+          className="marquee-text"
+          style={textCSS}
+          data-fullscreen={isFullscreen}
+          aria-hidden
+        >
+          {displayText}
+        </div>
       </div>
       
       {/* FULLSCREEN PORTAL - Render directly to document.body to bypass all container clipping */}
@@ -347,41 +342,46 @@ const MarqueeDisplayComponent: React.FC<MarqueeDisplayProps> = ({
           onKeyDown={(e) => {
             if (e.key === 'Escape') {
               e.preventDefault();
-              // Call the parent's toggle function
               window.dispatchEvent(new CustomEvent('exitFullscreen'));
             }
           }}
-          tabIndex={0} // Make it focusable to receive key events
+          tabIndex={0}
         >
-          {/* Marquee text with proper animation */}
-          <div style={{
-            fontSize: textCSS.fontSize || '72px',
-            color: textCSS.color || textColor, // Use actual selected color
-            fontWeight: textCSS.fontWeight || 'bold',
-            fontFamily: textCSS.fontFamily || 'Arial, sans-serif',
-            whiteSpace: 'nowrap',
-            position: 'absolute',
-            // Use the animation based on direction
-            animation: direction === 'right-to-left' 
-              ? `marqueeScrollRTLFullscreen ${animationDuration}s linear infinite`
-              : `marqueeScrollLTRFullscreen ${animationDuration}s linear infinite`,
-            // Ensure text is visible
-            minWidth: '200px',
-            textAlign: 'center',
-            // Use dynamic text shadow based on selected color
-            textShadow: `0 0 10px ${textCSS.color || textColor}, 0 0 20px ${textCSS.color || textColor}, 0 0 30px ${textCSS.color || textColor}`
-          }}>
-            {displayText}
+          <div
+            className="marquee-track marquee-fullscreen-track"
+            style={{
+              ...getAnimationStyles(),
+              animation: direction === 'right-to-left'
+                ? `marqueeTrackRTL ${animationDuration}s linear infinite`
+                : `marqueeTrackLTR ${animationDuration}s linear infinite`,
+            } as React.CSSProperties}
+          >
+            <div style={{
+              fontSize: textCSS.fontSize || '72px',
+              color: textCSS.color || textColor,
+              fontWeight: textCSS.fontWeight || 'bold',
+              fontFamily: textCSS.fontFamily || 'Arial, sans-serif',
+              whiteSpace: 'nowrap',
+              flexShrink: 0,
+              textShadow: `0 0 10px ${textCSS.color || textColor}, 0 0 20px ${textCSS.color || textColor}`,
+            }}>
+              {displayText}
+            </div>
+            <div className="marquee-track-spacer" aria-hidden style={spacerStyle} />
+            <div style={{
+              fontSize: textCSS.fontSize || '72px',
+              color: textCSS.color || textColor,
+              fontWeight: textCSS.fontWeight || 'bold',
+              fontFamily: textCSS.fontFamily || 'Arial, sans-serif',
+              whiteSpace: 'nowrap',
+              flexShrink: 0,
+              textShadow: `0 0 10px ${textCSS.color || textColor}, 0 0 20px ${textCSS.color || textColor}`,
+            }} aria-hidden>
+              {displayText}
+            </div>
           </div>
         </div>,
         document.body
-      )}
-      
-      {/* Real-time update indicator */}
-      {isUpdating && !isFullscreen && (
-        <div className="marquee-update-indicator">
-          Updating...
-        </div>
       )}
       
       {/* Animation error indicator */}

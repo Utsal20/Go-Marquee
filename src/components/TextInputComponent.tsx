@@ -103,10 +103,6 @@ const TextInputComponent: React.FC<TextInputProps> = ({
 
   return (
     <div className="text-input-container">
-      <label htmlFor="marquee-text" className="text-input-label">
-        Enter your marquee text:
-      </label>
-      
       <textarea
         id="marquee-text"
         className={`text-input ${isWarning ? 'warning' : ''} ${isAtLimit ? 'at-limit' : ''} ${validationError ? 'error' : ''}`}

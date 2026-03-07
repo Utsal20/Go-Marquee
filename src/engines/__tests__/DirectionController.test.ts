@@ -95,8 +95,11 @@ describe('DirectionController', () => {
       
       expect(css['--start-position']).toBe('100%');
       expect(css['--end-position']).toBe('-200px');
+      expect(css['--track-start']).toBe('600px'); // containerWidth - textWidth
+      expect(css['--track-end']).toBe('-200px');
       expect(css['--container-width']).toBe('800px');
       expect(css['--text-width']).toBe('200px');
+      expect(css['--marquee-text-width']).toBe('200px');
     });
 
     it('should generate correct CSS for right-to-left direction', () => {
@@ -108,6 +111,8 @@ describe('DirectionController', () => {
       
       expect(css['--start-position']).toBe('-200px');
       expect(css['--end-position']).toBe('100%');
+      expect(css['--track-start']).toBe('-200px');
+      expect(css['--track-end']).toBe('600px');
       expect(css['--container-width']).toBe('800px');
       expect(css['--text-width']).toBe('200px');
     });

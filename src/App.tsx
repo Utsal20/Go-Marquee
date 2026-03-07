@@ -100,7 +100,6 @@ function App() {
       
       // If URL parameters exist, use them and return
       if (Object.keys(urlState).length > 0) {
-        console.log('Loaded state from URL parameters:', urlState);
         return {
           ...DEFAULT_APP_STATE,
           ...urlState,
@@ -197,11 +196,8 @@ function App() {
   }, [updateStateWithFeedback]);
 
   const handleToggleFullscreen = useCallback(() => {
-    console.log('App - handleToggleFullscreen called, current state:', appState.isFullscreen);
     setAppState(prev => {
       const newState = { ...prev, isFullscreen: !prev.isFullscreen };
-      console.log('App - Setting new fullscreen state:', newState.isFullscreen);
-      console.log('App - New state object:', newState);
       return newState;
     });
     // Don't show feedback for fullscreen toggle as it's visually obvious
@@ -564,7 +560,7 @@ function App() {
           <div 
             className={`app ${isKeyboardUser ? 'keyboard-navigation' : ''} ${appState.isFullscreen ? 'app-fullscreen' : ''}`} 
             role="application" 
-            aria-label="GoMarquee - Customizable Scrolling Text"
+            aria-label="GoMarquee"
             style={appState.isFullscreen ? {
               position: 'fixed',
               top: 0,
@@ -597,7 +593,7 @@ function App() {
                   <div className="header-content">
                     <div className="header-text">
                       <h1 className="app-title">Go Marquee</h1>
-                      <p className="app-subtitle">Customizable Scrolling Text</p>
+                      <p className="app-subtitle">GoMarquee</p>
                       <p className="app-description">
                         Create beautiful scrolling marquee displays with real-time styling controls. 
                         Perfect for presentations, events, and digital signage.
@@ -634,11 +630,61 @@ function App() {
                     <h2 id="text-input-title" className="section-title">
                       Enter Your Text
                     </h2>
-                    <TextInputComponent
-                      value={appState.text}
-                      onChange={handleTextChange}
-                      maxLength={500}
-                    />
+                    <div className="text-input-section-row">
+                      <TextInputComponent
+                        value={appState.text}
+                        onChange={handleTextChange}
+                        maxLength={500}
+                      />
+                      <div className="fullscreen-controls fullscreen-controls--aside">
+                        <div className="fullscreen-controls-buttons">
+                          <button
+                            className="fullscreen-toggle-btn"
+                            onClick={handleToggleFullscreen}
+                            title="Fullscreen"
+                            style={{
+                              padding: '12px 24px',
+                              background: '#4CAF50',
+                              color: 'white',
+                              border: 'none',
+                              borderRadius: '6px',
+                              cursor: 'pointer',
+                              fontSize: '16px',
+                              fontWeight: 'bold',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '8px'
+                            }}
+                          >
+                            ⛶ Fullscreen
+                          </button>
+                          <button
+                            onClick={handleCopyShareableURL}
+                            title="Copy shareable URL to clipboard"
+                            style={{
+                              padding: '12px 20px',
+                              background: '#2196F3',
+                              color: 'white',
+                              border: 'none',
+                              borderRadius: '6px',
+                              cursor: 'pointer',
+                              fontSize: '14px',
+                              fontWeight: 'bold',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '6px'
+                            }}
+                          >
+                            🔗 Share URL
+                          </button>
+                        </div>
+                        <div className="mobile-gesture-hint" style={{ marginTop: '8px' }}>
+                          <small style={{ color: '#888', fontSize: '12px' }}>
+                            💡 Tip: Double-tap or swipe up to enter fullscreen • Share URL to save your settings
+                          </small>
+                        </div>
+                      </div>
+                    </div>
                   </section>
                   
                   {/* Style Controls Section */}
@@ -659,58 +705,6 @@ function App() {
                       onDirectionChange={handleDirectionChange}
                       onAnimationSpeedChange={handleAnimationSpeedChange}
                     />
-                    
-                    {/* Fullscreen Controls - moved here after customize appearance */}
-                    <div className="fullscreen-controls" style={{ marginTop: '20px' }}>
-                      <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
-                        <button
-                          className="fullscreen-toggle-btn"
-                          onClick={handleToggleFullscreen}
-                          title="Enter fullscreen mode"
-                          style={{
-                            padding: '12px 24px',
-                            background: '#4CAF50',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '6px',
-                            cursor: 'pointer',
-                            fontSize: '16px',
-                            fontWeight: 'bold',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px'
-                          }}
-                        >
-                          ⛶ Enter Fullscreen
-                        </button>
-                        
-                        <button
-                          onClick={handleCopyShareableURL}
-                          title="Copy shareable URL to clipboard"
-                          style={{
-                            padding: '12px 20px',
-                            background: '#2196F3',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '6px',
-                            cursor: 'pointer',
-                            fontSize: '14px',
-                            fontWeight: 'bold',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '6px'
-                          }}
-                        >
-                          🔗 Share URL
-                        </button>
-                      </div>
-                      
-                      <div className="mobile-gesture-hint" style={{ marginTop: '8px' }}>
-                        <small style={{ color: '#888', fontSize: '12px' }}>
-                          💡 Tip: Double-tap or swipe up to enter fullscreen • Share URL to save your settings
-                        </small>
-                      </div>
-                    </div>
                   </section>
                   
                   {/* Live Preview Section - Commented out to save space */}

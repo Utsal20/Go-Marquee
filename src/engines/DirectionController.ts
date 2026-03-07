@@ -122,7 +122,9 @@ export class DirectionController {
   }
 
   /**
-   * Generate CSS animation properties for the given direction and dimensions
+   * Generate CSS animation properties for the given direction and dimensions.
+   * For seamless loop, uses track positions: a track with two text copies is animated
+   * so when one copy exits, the other is in the same visual position.
    * @param textWidth - Width of the text element in pixels
    * @param containerWidth - Width of the container in pixels
    * @returns CSS properties object for animation
@@ -132,23 +134,32 @@ export class DirectionController {
     
     let startPosition: string;
     let endPosition: string;
+    let trackStart: string;
+    let trackEnd: string;
     
     if (this.currentDirection === 'left-to-right') {
-      // Text starts from right edge and moves to left edge
+      // LTR: text moves right to left. Track starts with first copy on right, ends when second copy is in same place.
       startPosition = '100%';
       endPosition = `-${textWidth}px`;
+      trackStart = `${containerWidth - textWidth}px`;
+      trackEnd = `-${textWidth}px`;
     } else {
-      // Text starts from left edge and moves to right edge
+      // RTL: text moves left to right.
       startPosition = `-${textWidth}px`;
       endPosition = '100%';
+      trackStart = `-${textWidth}px`;
+      trackEnd = `${containerWidth - textWidth}px`;
     }
     
     return {
       '--start-position': startPosition,
       '--end-position': endPosition,
+      '--track-start': trackStart,
+      '--track-end': trackEnd,
       '--animation-duration': `${duration}s`,
       '--container-width': `${containerWidth}px`,
       '--text-width': `${textWidth}px`,
+      '--marquee-text-width': `${textWidth}px`,
     };
   }
 

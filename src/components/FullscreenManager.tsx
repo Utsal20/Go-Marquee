@@ -58,7 +58,6 @@ const FullscreenManager: React.FC<FullscreenManagerProps> = ({
 
       // Only sync if there's a mismatch and we're not already syncing
       if (browserIsFullscreen !== isFullscreen && !isRetrying) {
-        console.log('FullscreenManager - Syncing state:', browserIsFullscreen);
         onToggleFullscreen();
       }
     };
@@ -176,10 +175,6 @@ const FullscreenManager: React.FC<FullscreenManagerProps> = ({
 
   // Handle fullscreen toggle
   const handleToggleFullscreen = useCallback(() => {
-    console.log('FullscreenManager - handleToggleFullscreen called');
-    console.log('FullscreenManager - isFullscreenSupported:', isFullscreenSupported);
-    console.log('FullscreenManager - current isFullscreen:', isFullscreen);
-    
     if (!isFullscreenSupported) {
       const errorMessage = 'Fullscreen is not supported in this browser. Try using F11 instead.';
       setFullscreenError(errorMessage);
@@ -199,10 +194,8 @@ const FullscreenManager: React.FC<FullscreenManagerProps> = ({
     }
 
     if (isFullscreen) {
-      console.log('FullscreenManager - Attempting to exit fullscreen');
       exitFullscreen();
     } else {
-      console.log('FullscreenManager - Attempting to enter fullscreen');
       enterFullscreen();
     }
   }, [isFullscreen, isFullscreenSupported, enterFullscreen, exitFullscreen, isRetrying]);

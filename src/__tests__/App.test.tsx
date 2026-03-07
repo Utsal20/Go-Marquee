@@ -104,7 +104,7 @@ describe('App Component - Initial UI State', () => {
 
     // Check for clean, uncluttered interface elements
     expect(screen.getByText('Go Marquee')).toBeInTheDocument();
-    expect(screen.getByText('Customizable Scrolling Text')).toBeInTheDocument();
+    expect(screen.getByText('GoMarquee')).toBeInTheDocument();
     expect(screen.getByText('Create beautiful scrolling marquee displays with real-time styling controls. Perfect for presentations, events, and digital signage.')).toBeInTheDocument();
 
     // Check for proper section organization
@@ -163,7 +163,7 @@ describe('App Component - Initial UI State', () => {
 
     // Check for proper semantic structure
     const app = screen.getByRole('application');
-    expect(app).toHaveAttribute('aria-label', 'GoMarquee - Customizable Scrolling Text');
+    expect(app).toHaveAttribute('aria-label', 'GoMarquee');
 
     // Check for proper heading hierarchy
     const mainHeading = screen.getByRole('heading', { level: 1 });

@@ -22,11 +22,6 @@
   transition: box-shadow 0.3s ease-out, border-color 0.3s ease-out;
 }
 
-.marquee-container.marquee-updating {
-  box-shadow: 0 0 15px rgba(76, 175, 80, 0.4);
-  border: 2px solid rgba(76, 175, 80, 0.6);
-}
-
 /* FORCE FULLSCREEN STYLES - MAXIMUM Z-INDEX */
 .marquee-container.marquee-fullscreen.marquee-ltr,
 .marquee-container.marquee-fullscreen.marquee-rtl,
@@ -98,20 +93,40 @@
 }
 
 .marquee-text {
-  position: absolute;
   white-space: nowrap;
+  flex-shrink: 0;
+  /* When inside track, no absolute positioning */
+  position: relative;
   
   /* Hardware acceleration for smooth animation */
   transform: translateZ(0);
   will-change: transform;
   backface-visibility: hidden;
   
-  /* Smooth transition for direction changes */
-  transition: none; /* Disable transitions during animation */
-  
-  /* Ensure text is vertically centered in normal mode */
+  transition: none;
+}
+
+/* Marquee track: holds two text copies for seamless loop */
+.marquee-track {
+  position: absolute;
+  left: 0;
   top: 50%;
-  transform: translateY(-50%) translateZ(0);
+  transform: translateY(-50%);
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.marquee-track .marquee-text {
+  top: auto;
+  transform: none;
+}
+
+/* Explicit spacer between the two text copies - width set dynamically in JS to match text width */
+.marquee-track-spacer {
+  flex-shrink: 0;
 }
 
 /* Override positioning for fullscreen mode */
@@ -122,29 +137,35 @@
   transform: none !important;
 }
 
-/* Animation classes for direction control */
+/* Track-based seamless loop animations (normal mode) */
+@keyframes marqueeTrackLTR {
+  0% {
+    transform: translateY(-50%) translateX(var(--track-start, 100%));
+  }
+  100% {
+    transform: translateY(-50%) translateX(var(--track-end, -100%));
+  }
+}
+
+@keyframes marqueeTrackRTL {
+  0% {
+    transform: translateY(-50%) translateX(var(--track-start, -100%));
+  }
+  100% {
+    transform: translateY(-50%) translateX(var(--track-end, 100%));
+  }
+}
+
+/* Legacy single-element animations - kept for fallback/reduced-motion */
 .marquee-ltr .marquee-text {
-  animation: marqueeScrollLTR var(--animation-duration, 5s) linear infinite;
+  animation: none;
 }
 
 .marquee-rtl .marquee-text {
-  animation: marqueeScrollRTL var(--animation-duration, 5s) linear infinite;
+  animation: none;
 }
 
-/* Real-time update indicator */
-.marquee-update-indicator {
-  position: absolute;
-  top: 5px;
-  right: 10px;
-  background: rgba(76, 175, 80, 0.9);
-  color: white;
-  padding: 2px 6px;
-  border-radius: 3px;
-  font-size: 10px;
-  font-weight: bold;
-  z-index: 10;
-  animation: updatePulse 1s ease-in-out infinite;
-}
+/* Real-time update indicator - removed (was causing green flash when typing) */
 
 .marquee-error-indicator {
   position: absolute;
@@ -254,13 +275,23 @@
   }
 }
 
+/* Fullscreen portal track - same positioning as normal track */
+.marquee-fullscreen-track {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
 /* Pause animation on hover for better UX (non-fullscreen only) */
-.marquee-container:not(.marquee-fullscreen):hover .marquee-text {
+.marquee-container:not(.marquee-fullscreen):hover .marquee-track {
   animation-play-state: paused;
 }
 
-/* Hide ALL indicators and debug elements in fullscreen */
-.marquee-container.marquee-fullscreen .marquee-update-indicator,
+/* Hide error and fallback indicators in fullscreen */
 .marquee-container.marquee-fullscreen .marquee-error-indicator,
 .marquee-container.marquee-fullscreen .marquee-fallback-notice {
   display: none !important;
@@ -292,13 +323,6 @@
     justify-content: center !important;
   }
   
-  .marquee-update-indicator {
-    font-size: 9px;
-    padding: 1px 4px;
-    top: 3px;
-    right: 5px;
-  }
-  
   .marquee-error-indicator {
     font-size: 9px;
     padding: 2px 4px;
@@ -325,26 +349,13 @@
   .marquee-container {
     border: 2px solid currentColor;
   }
-  
-  .marquee-update-indicator {
-    background: currentColor;
-    color: var(--background-color, #000);
-  }
 }
 
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
+  .marquee-track,
   .marquee-text {
     animation-duration: 20s !important;
-  }
-  
-  .marquee-update-indicator {
-    animation: none;
-  }
-  
-  .marquee-container.marquee-updating {
-    animation: none;
-    box-shadow: 0 0 5px rgba(76, 175, 80, 0.6);
   }
 }
 
@@ -363,8 +374,11 @@
 }
 
 /* Loading state */
-.marquee-container.loading .marquee-text {
+.marquee-container.loading .marquee-track {
   animation-play-state: paused;
+}
+
+.marquee-container.loading .marquee-text {
   opacity: 0.7;
 }
 

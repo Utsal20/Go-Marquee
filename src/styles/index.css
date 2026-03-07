@@ -260,6 +260,14 @@ body {
   text-align: left;
 }
 
+/* Text input section: text area left, Fullscreen/Share URL right */
+.text-input-section-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+}
+
 /* Real-time update feedback styles with optimized animations */
 .update-feedback {
   position: absolute;
@@ -532,6 +540,10 @@ body {
   
   .app-section {
     padding: var(--space-md);
+  }
+  
+  .text-input-section-row {
+    flex-direction: column;
   }
   
   .update-feedback {

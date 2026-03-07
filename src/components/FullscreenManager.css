@@ -25,6 +25,25 @@
   gap: 10px;
 }
 
+/* Buttons row (Fullscreen + Share URL) */
+.fullscreen-controls-buttons {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* When placed aside the text input (Enter Your Text section) */
+.fullscreen-controls--aside {
+  margin: 0;
+  align-items: flex-start;
+  flex-shrink: 0;
+}
+
+.fullscreen-controls--aside .mobile-gesture-hint {
+  text-align: left;
+}
+
 .fullscreen-toggle-btn {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;

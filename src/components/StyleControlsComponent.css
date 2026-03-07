@@ -66,7 +66,107 @@
   border-color: #bbb;
 }
 
-/* Color Picker Grid */
+/* Color Picker - Color wheel (react-colorful) */
+.color-control-group {
+  position: relative;
+}
+
+/* When popover is open, stack above Text Style / Speed sections */
+.color-control-group.color-picker-open {
+  z-index: 1000;
+}
+
+/* Single row: presets on the left, trigger on the right */
+.color-picker-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.color-picker-wheel-wrap {
+  position: relative;
+  margin-left: auto;
+}
+
+.color-picker-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: #333;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  min-height: 44px;
+}
+
+.color-picker-trigger:hover {
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+}
+
+.color-picker-swatch {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  flex-shrink: 0;
+}
+
+.color-picker-hex {
+  font-family: ui-monospace, monospace;
+  font-size: 0.9rem;
+}
+
+.color-picker-popover {
+  position: absolute;
+  z-index: 1000;
+  top: 100%;
+  left: 0;
+  margin-top: 8px;
+  padding: 12px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  border: 1px solid #e0e0e0;
+}
+
+.color-wheel-picker {
+  width: 200px !important;
+  height: 160px !important;
+}
+
+/* Override react-colorful defaults to match app */
+.color-wheel-picker .react-colorful__saturation {
+  border-radius: 8px;
+}
+
+.color-wheel-picker .react-colorful__hue {
+  height: 12px;
+  border-radius: 6px;
+  margin-top: 10px;
+}
+
+/* Quick preset swatches - left side of row */
+.color-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.color-presets .color-option {
+  width: 36px;
+  height: 36px;
+  margin: 0;
+  position: relative;
+}
+
+/* Legacy grid class kept for any tests that target it; radial is default */
 .color-picker-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -156,13 +256,6 @@
   display: block;
 }
 
-.style-description {
-  font-size: 0.85rem;
-  color: #666;
-  margin-top: 2px;
-  display: block;
-}
-
 /* Speed Options */
 .speed-options {
   display: flex;
@@ -204,11 +297,11 @@
   display: block;
 }
 
-.speed-description {
-  font-size: 0.85rem;
-  color: #666;
-  margin-top: 2px;
+.speed-emoji {
+  font-size: 1.5rem;
+  line-height: 1;
   display: block;
+  margin-bottom: 4px;
 }
 
 /* Responsive Design */
@@ -228,9 +321,8 @@
     margin-bottom: 0;
   }
   
-  .color-picker-grid {
-    grid-template-columns: repeat(8, 1fr);
-    max-width: 400px;
+  .color-picker-radial {
+    --radius: 48px;
   }
   
   .style-options {

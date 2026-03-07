@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { HexColorPicker } from 'react-colorful';
 import { StyleControlsProps, FontSize, TextStyle, Direction, AnimationSpeed } from '../types';
 import './StyleControlsComponent.css';
 
@@ -23,31 +24,23 @@ const StyleControlsComponent: React.FC<StyleControlsProps> = ({
     { value: 'jumbo', label: 'Jumbo', size: '72px' },
   ];
 
-  // Expanded color options with more variety
-  const colorOptions = [
-    { value: '#ff0000', label: 'Red', name: 'red' },
-    { value: '#0000ff', label: 'Blue', name: 'blue' },
-    { value: '#008000', label: 'Green', name: 'green' },
-    { value: '#ffff00', label: 'Yellow', name: 'yellow' },
-    { value: '#800080', label: 'Purple', name: 'purple' },
-    { value: '#ffa500', label: 'Orange', name: 'orange' },
-    { value: '#ffffff', label: 'White', name: 'white' },
-    { value: '#000000', label: 'Black', name: 'black' },
-    { value: '#ff69b4', label: 'Hot Pink', name: 'hotpink' },
-    { value: '#00ffff', label: 'Cyan', name: 'cyan' },
-    { value: '#ff1493', label: 'Deep Pink', name: 'deeppink' },
-    { value: '#32cd32', label: 'Lime Green', name: 'limegreen' },
-    { value: '#ff4500', label: 'Orange Red', name: 'orangered' },
-    { value: '#9370db', label: 'Medium Purple', name: 'mediumpurple' },
-    { value: '#00fa9a', label: 'Medium Spring Green', name: 'mediumspringgreen' },
-    { value: '#ffd700', label: 'Gold', name: 'gold' },
+  // Quick preset colors (one-tap alongside the color wheel)
+  const colorPresets = [
+    { value: '#ff0000', label: 'Red' },
+    { value: '#0000ff', label: 'Blue' },
+    { value: '#008000', label: 'Green' },
+    { value: '#ffff00', label: 'Yellow' },
+    { value: '#ffffff', label: 'White' },
+    { value: '#000000', label: 'Black' },
+    { value: '#ffa500', label: 'Orange' },
+    { value: '#800080', label: 'Purple' },
   ];
 
   // Text style options as defined in design document
-  const textStyleOptions: { value: TextStyle; label: string; description: string }[] = [
-    { value: 'simple', label: 'Simple', description: 'Clean, normal text' },
-    { value: 'bold', label: 'Bold', description: 'Bold font weight' },
-    { value: 'neon', label: 'Neon', description: 'Glowing neon effect' },
+  const textStyleOptions: { value: TextStyle; label: string }[] = [
+    { value: 'simple', label: 'Simple' },
+    { value: 'bold', label: 'Bold' },
+    { value: 'neon', label: 'Neon' },
   ];
 
   // Direction options
@@ -56,13 +49,29 @@ const StyleControlsComponent: React.FC<StyleControlsProps> = ({
     { value: 'right-to-left', label: 'Right to Left' },
   ];
 
-  // Animation speed options
-  const speedOptions: { value: AnimationSpeed; label: string; description: string }[] = [
-    { value: 'slow', label: 'Slow', description: 'Relaxed pace' },
-    { value: 'normal', label: 'Normal', description: 'Standard speed' },
-    { value: 'fast', label: 'Fast', description: 'Quick movement' },
-    { value: 'very-fast', label: 'Very Fast', description: 'Rapid scrolling' },
+  // Animation speed options with emoji icons
+  const speedOptions: { value: AnimationSpeed; label: string; emoji: string }[] = [
+    { value: 'slow', label: 'Slow', emoji: '🐢' },
+    { value: 'normal', label: 'Normal', emoji: '🐄' },
+    { value: 'fast', label: 'Fast', emoji: '🐇' },
+    { value: 'very-fast', label: 'Very Fast', emoji: '🐆' },
   ];
+
+  const [colorPickerOpen, setColorPickerOpen] = useState(false);
+  const colorPickerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!colorPickerOpen) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (colorPickerRef.current && !colorPickerRef.current.contains(e.target as Node)) {
+        setColorPickerOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [colorPickerOpen]);
+
+  const normalizedColor = textColor.startsWith('#') ? textColor : `#${textColor}`;
 
   return (
     <div className="style-controls">
@@ -107,24 +116,56 @@ const StyleControlsComponent: React.FC<StyleControlsProps> = ({
         </div>
       </div>
 
-      {/* Color Control */}
-      <div className="control-group">
+      {/* Color Control - Color wheel picker */}
+      <div
+        className={`control-group color-control-group${colorPickerOpen ? ' color-picker-open' : ''}`}
+        ref={colorPickerRef}
+      >
         <label className="control-label">Text Color</label>
-        <div className="color-picker-grid">
-          {colorOptions.map((color) => (
+        <div className="color-picker-row">
+          <div className="color-presets">
+            {colorPresets.map((color) => (
+              <button
+                key={color.value}
+                type="button"
+                className={`color-option ${textColor === color.value ? 'selected' : ''}`}
+                style={{ backgroundColor: color.value }}
+                onClick={() => onColorChange(color.value)}
+                aria-label={`Select ${color.label} color`}
+                title={color.label}
+              >
+                {textColor === color.value && (
+                  <span className="color-checkmark">✓</span>
+                )}
+              </button>
+            ))}
+          </div>
+          <div className="color-picker-wheel-wrap">
             <button
-              key={color.value}
-              className={`color-option ${textColor === color.value ? 'selected' : ''}`}
-              style={{ backgroundColor: color.value }}
-              onClick={() => onColorChange(color.value)}
-              aria-label={`Select ${color.label} color`}
-              title={color.label}
+              type="button"
+              className="color-picker-trigger"
+              onClick={() => setColorPickerOpen((open) => !open)}
+              aria-label="Choose text color"
+              aria-expanded={colorPickerOpen}
+              aria-haspopup="dialog"
+              title="Click to open color picker"
             >
-              {textColor === color.value && (
-                <span className="color-checkmark">✓</span>
-              )}
+              <span
+                className="color-picker-swatch"
+                style={{ backgroundColor: normalizedColor }}
+              />
+              <span className="color-picker-hex">{normalizedColor}</span>
             </button>
-          ))}
+            {colorPickerOpen && (
+              <div className="color-picker-popover" role="dialog" aria-label="Color picker">
+                <HexColorPicker
+                  color={normalizedColor}
+                  onChange={onColorChange}
+                  className="color-wheel-picker"
+                />
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -140,7 +181,6 @@ const StyleControlsComponent: React.FC<StyleControlsProps> = ({
               aria-label={`Select ${style.label} style`}
             >
               <span className="style-label">{style.label}</span>
-              <span className="style-description">{style.description}</span>
             </button>
           ))}
         </div>
@@ -155,10 +195,11 @@ const StyleControlsComponent: React.FC<StyleControlsProps> = ({
               key={speed.value}
               className={`speed-option ${animationSpeed === speed.value ? 'selected' : ''}`}
               onClick={() => onAnimationSpeedChange(speed.value)}
-              aria-label={`Select ${speed.label} speed`}
+              aria-label={`Select ${speed.label} speed (${speed.emoji})`}
+              title={speed.label}
             >
+              <span className="speed-emoji" aria-hidden>{speed.emoji}</span>
               <span className="speed-label">{speed.label}</span>
-              <span className="speed-description">{speed.description}</span>
             </button>
           ))}
         </div>

@@ -58,8 +58,8 @@ const HelpPopup: React.FC<HelpPopupProps> = ({ isOpen, onClose }) => {
           <section className="help-section">
             <h3>Fullscreen Mode</h3>
             <ul>
-              <li><strong>Enter Fullscreen:</strong> Click the fullscreen button or double-tap on mobile</li>
-              <li><strong>Exit Fullscreen:</strong> Press Escape, click the exit button, or swipe down on mobile</li>
+              <li><strong>Fullscreen:</strong> Click the fullscreen button or double-tap on mobile</li>
+              <li><strong>Exit fullscreen:</strong> Press Escape, click the exit button, or swipe down on mobile</li>
               <li><strong>Fullscreen Features:</strong> Text becomes much larger and fills the entire screen</li>
             </ul>
           </section>
@@ -68,7 +68,7 @@ const HelpPopup: React.FC<HelpPopupProps> = ({ isOpen, onClose }) => {
             <h3>Mobile Gestures</h3>
             <ul>
               <li><strong>Double-tap:</strong> Toggle fullscreen mode</li>
-              <li><strong>Swipe up:</strong> Enter fullscreen</li>
+              <li><strong>Swipe up:</strong> Fullscreen</li>
               <li><strong>Swipe down:</strong> Exit fullscreen</li>
               <li><strong>Swipe left:</strong> Change to right-to-left direction</li>
               <li><strong>Swipe right:</strong> Change to left-to-right direction</li>

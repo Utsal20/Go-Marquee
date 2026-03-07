@@ -128,10 +128,10 @@ describe('StyleControlsComponent Unit Tests', () => {
       expect(screen.getByLabelText('Select Bold style')).toBeInTheDocument();
       expect(screen.getByLabelText('Select Neon style')).toBeInTheDocument();
       
-      // Check that descriptions are provided
-      expect(screen.getByText('Clean, normal text')).toBeInTheDocument();
-      expect(screen.getByText('Bold font weight')).toBeInTheDocument();
-      expect(screen.getByText('Glowing neon effect')).toBeInTheDocument();
+      // Check that style labels are shown
+      expect(screen.getByText('Simple')).toBeInTheDocument();
+      expect(screen.getByText('Bold')).toBeInTheDocument();
+      expect(screen.getByText('Neon')).toBeInTheDocument();
     });
 
     it('should have mobile-friendly touch targets for style buttons', () => {
