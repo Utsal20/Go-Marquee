@@ -396,7 +396,7 @@ const MobileOptimizer: React.FC<MobileOptimizerProps> = ({
       onTouchEnd={handleTouchEnd}
       onTouchCancel={handleTouchCancel}
     >
-      {/* Viewport meta information for debugging */}
+      {/* Viewport meta information for debugging
       {typeof window !== 'undefined' && window.location.hostname === 'localhost' && (
         <div className="viewport-debug">
           <small>
@@ -407,6 +407,7 @@ const MobileOptimizer: React.FC<MobileOptimizerProps> = ({
           </small>
         </div>
       )}
+       */}
 
       {/* Orientation change indicator */}
       {isOrientationChanging && (

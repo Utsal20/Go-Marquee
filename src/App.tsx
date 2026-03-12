@@ -593,18 +593,12 @@ function App() {
                   <div className="header-content">
                     <div className="header-text">
                       <h1 className="app-title">Go Marquee</h1>
-                      <p className="app-subtitle">GoMarquee</p>
-                      <p className="app-description">
-                        Create beautiful scrolling marquee displays with real-time styling controls. 
-                        Perfect for presentations, events, and digital signage.
-                      </p>
                     </div>
                     <button 
                       className="help-button"
                       onClick={handleOpenHelp}
                       aria-label="Open help"
                       type="button"
-                      title="How to use GoMarquee"
                     >
                       ?
                     </button>
